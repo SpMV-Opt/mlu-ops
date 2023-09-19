@@ -13975,6 +13975,108 @@ mluOpRoiPoolingBackward(mluOpHandle_t handle,
                         const float spatial_scale,
                         const mluOpTensorDescriptor_t grads_image_desc,
                         void *grads_image);
+
+// Group:Transform
+/*!
+ * @brief Transforms linearly for an input tensor with the following formula:
+ *
+ * output = alpha * input + beta
+ *
+ * The \b input and \b output are tensors, and \b alpha and \b beta are the
+ * scaling factors
+ * used in the operation. \b mluOpTransform_v2 supports host and device scale
+ * pointers \b alpha
+ * and \b beta.
+ *
+ * @param[in] handle
+ *   Input. Handle to a Cambricon MLUOP context that is used to manage MLU
+ *  devices and queues in this
+ *   operation. For detailed information, see ::mluOpHandle_t.
+ * @param[in] input_desc
+ *   Input. The descriptor of the input tensor \b input. For detailed
+ *   information, see
+ *   ::mluOpTensorDescriptor_t.
+ * @param[in] input
+ *   Input. A device pointer to the MLU memory that stores the input tensor.
+ * @param[in] pointer_mode
+ *   Input.  An enum value which indicates that the scalar values \b alpha
+ * and \b beta are
+ *   passed by reference on the host or device. The information is defined in
+ * ::mluOpPointerMode_t.
+ * @param[in] alpha
+ *   Input.  A pointer to scaling factor of tensor input.
+ *   If the \b pointer_mode is \b MLUOP_POINTER_MODE_DEVICE, the \b alpha
+ * should be a device pointer.
+ *   If the \b pointer_mode is \b MLUOP_POINTER_MODE_HOST, the \b alpha
+ * should be a host pointer.
+ * @param[in] beta
+ *   Input.  A pointer to scaling factor of tensor input.
+ *   If the \b pointer_mode is \b MLUOP_POINTER_MODE_DEVICE, the \b beta
+ * should be a device pointer.
+ *   If the \b pointer_mode is \b MLUOP_POINTER_MODE_HOST, the \b beta
+ * should be a host pointer.
+ * @param[in] output_desc
+ *   Input. The descriptor of the output tensor \b output. For detailed
+ * information, see
+ *   ::mluOpTensorDescriptor_t.
+ * @param[out] output
+ *   Output. The descriptor of the output tensor. For detailed information, see
+ *   ::mluOpTensorDescriptor_t.
+ *
+ * @par Return
+ * - ::MLUOP_STATUS_SUCCESS, ::MLUOP_STATUS_BAD_PARAM
+ *
+ * @par Formula
+ * - See "Transform Operator" section in "Cambricon MLUOP User Guide" for
+ * details.
+ *
+ * @par Data Type
+ * - The combinations of the data types for input tensor \b input and output tensor
+ *   \b output must be half-half, float-float or int32-int32.
+ * - \b alpha and \b beta: If the data type of tensors is float or half, the data
+ *   type of \b alpha and \b beta should be float pointer. If the data type of tensors is
+ *   int32, the data type of \b alpha and \b beta should be int pointer.
+ *
+ * @par Scale Limitation
+ * - The tensor descriptors of input and output tensors must be the same.
+ * - The value of input and output tensors, which data type is int32, should be in
+ *   the range of [\f$-2^{23}\f$, \f$2^{23}\f$] on MLU200 series.
+ * - The number of dimensions is no more than \p MLUOP_DIM_MAX.
+ *
+ * @note
+ * - None.
+ *
+ * @par Requirements
+ * - None.
+ *
+ * @par Example
+ * - The example of this operation is as follows:
+     @verbatim
+       Input tensor   :   [[1, 2, 3],
+                           [4, 5, 6],
+                           [7, 8, 9]]
+
+       alpha          :   2
+
+       beta           :   1
+
+       Output tensor  :   [[3,  5,  7],
+                           [9,  11, 13],
+                           [15, 17, 19]]
+     @endverbatim
+ *
+ */
+
+mluOpStatus_t MLUOP_WIN_API
+mluOpTransform(mluOpHandle_t handle,
+               const mluOpPointerMode_t pointer_mode,
+               const void *alpha,
+               const mluOpTensorDescriptor_t input_desc,
+               const void *input,
+               const void *beta,
+               const mluOpTensorDescriptor_t output_desc,
+               void *output);
+
 #if defined(__cplusplus)
 }
 #endif
